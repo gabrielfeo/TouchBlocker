@@ -17,7 +17,6 @@ internal const val REQUEST_TOGGLE_BLOCK = 1029
 class TouchBlockerService : Service() {
 
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
-    private var currentlyBlocking = true
     private val overlayView by lazy(LazyThreadSafetyMode.NONE) { View(this) }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -30,7 +29,6 @@ class TouchBlockerService : Service() {
 
     private fun handleIntent(intent: Intent) {
         val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
-        println("KKK: $shouldBlock")
         toggleBlock(active = shouldBlock)
         showNotification(currentlyBlocking = shouldBlock)
     }
@@ -46,7 +44,6 @@ class TouchBlockerService : Service() {
     }
 
     private fun toggleBlock(active: Boolean) {
-        currentlyBlocking = active
         toggleOverlayView(active)
         Toast.makeText(this, "Toggled $active", Toast.LENGTH_LONG).show()
     }
