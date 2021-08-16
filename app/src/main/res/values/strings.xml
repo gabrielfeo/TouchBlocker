@@ -1,3 +1,4 @@
 <resources>
-	<string name = "app_name">TouchBlocker</string>
+    <string name="app_name">TouchBlocker</string>
+    <string name="blocker_notification_channel_name">TouchBlocker control notification</string>
 </resources>

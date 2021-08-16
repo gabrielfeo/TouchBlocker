@@ -12,13 +12,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TouchBlocker">
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".TouchBlockerService"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

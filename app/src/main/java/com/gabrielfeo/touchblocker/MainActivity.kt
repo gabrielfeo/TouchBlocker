@@ -52,13 +52,13 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     @Suppress("LiftReturnOrAssignment")
     private fun createActivateButton(): Button {
-        val activateButton = Button(this).apply {
+        return Button(this).apply {
             text = "Activate"
             setOnClickListener {
-                toggleOverlayView()
+                val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
+                startService(startTouchBlocker)
             }
         }
-        return activateButton
     }
 
     private fun toggleOverlayView() {
