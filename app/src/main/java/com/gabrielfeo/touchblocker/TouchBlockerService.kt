@@ -1,12 +1,11 @@
 package com.gabrielfeo.touchblocker
 
-import android.annotation.SuppressLint
-import android.app.*
+import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
-import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
@@ -19,9 +18,7 @@ class TouchBlockerService : Service() {
 
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
     private var currentlyBlocking = true
-    private val overlayView by lazy(LazyThreadSafetyMode.NONE) {
-        createOverlayView()
-    }
+    private val overlayView by lazy(LazyThreadSafetyMode.NONE) { View(this) }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -59,18 +56,12 @@ class TouchBlockerService : Service() {
         if (active) {
             val layoutParams = WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY).apply {
                 gravity = Gravity.CENTER
+                width = 0
+                height = 0
             }
             windowManager.addView(overlayView, layoutParams)
         } else {
             windowManager.removeView(overlayView)
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Suppress("LiftReturnOrAssignment")
-    private fun createOverlayView(): Button {
-        return Button(this).apply {
-            text = "Activate"
         }
     }
 
