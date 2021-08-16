@@ -1,80 +1,60 @@
 package com.gabrielfeo.touchblocker
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.TextView
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 class MainActivity : AppCompatActivity() {
 
-    private val canDrawOverlays = MutableLiveData<Boolean>()
+    private var canBlock: Boolean by mutableStateOf(false)
+    private var startedService: Boolean by mutableStateOf(false)
 
-    @SuppressLint("SetTextI18n")
+    private fun checkCanBlock() = Settings.canDrawOverlays(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val container = createContentView()
-        setContentView(container)
-    }
-
-    private fun createContentView(): LinearLayout {
-        val canDrawStatusView = createCanDrawStatusView()
-        val activateButton = createStartButton()
-        val manageButton = createManageButton()
-        return LinearLayout(this).apply {
-            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            orientation = LinearLayout.VERTICAL
-            addView(canDrawStatusView)
-            addView(manageButton)
-            addView(activateButton)
+        setContent {
+            ManageScreen(
+                canBlock = canBlock,
+                serviceRunning = startedService,
+                onGrantPermissionClick = ::goToPermissionSettings,
+                onStartBlockingClick = ::startTouchBlockerService,
+            )
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    @Suppress("LiftReturnOrAssignment")
-    private fun createStartButton(): Button {
-        return Button(this).apply {
-            text = "Start service"
-            setOnClickListener {
-                val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
-                startService(startTouchBlocker)
-            }
-        }
+    override fun onStart() {
+        super.onStart()
+        canBlock = checkCanBlock()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun createManageButton(): Button {
-        return Button(this).apply {
-            text = "Manage"
-            setOnClickListener {
-                val packageUri = Uri.parse("package:$packageName")
-                val managePermission = Intent(ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
-                startActivity(managePermission)
-            }
-        }
+    private fun startTouchBlockerService() {
+        val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
+        startService(startTouchBlocker)
+        startedService = true
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun createCanDrawStatusView(): TextView {
-        return TextView(this).apply {
-            canDrawOverlays.observe(this@MainActivity, {
-                text = "Can draw overlays: $it"
-            })
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        canDrawOverlays.value = Settings.canDrawOverlays(this)
+    private fun goToPermissionSettings() {
+        val packageUri = Uri.parse("package:$packageName")
+        val managePermission = Intent(ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
+        startActivity(managePermission)
     }
 }
