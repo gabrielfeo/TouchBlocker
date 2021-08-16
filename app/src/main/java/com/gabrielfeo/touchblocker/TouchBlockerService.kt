@@ -1,11 +1,15 @@
 package com.gabrielfeo.touchblocker
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Intent
 import android.os.IBinder
+import android.view.Gravity
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.MutableLiveData
+import androidx.core.content.getSystemService
 
 internal const val ACTION_TOGGLE_BLOCK = "com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK"
 internal const val EXTRA_TOGGLE_BLOCK_TARGET_VALUE = "ACTION_TOGGLE_BLOCK.value"
@@ -15,6 +19,9 @@ class TouchBlockerService : Service() {
 
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
     private var currentlyBlocking = true
+    private val overlayView by lazy(LazyThreadSafetyMode.NONE) {
+        createOverlayView()
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -25,14 +32,13 @@ class TouchBlockerService : Service() {
     }
 
     private fun handleIntent(intent: Intent) {
-        if (intent.action == ACTION_TOGGLE_BLOCK) {
-            val value = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
-            toggleBlock(value)
-        }
-        showNotification()
+        val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
+        println("KKK: $shouldBlock")
+        toggleBlock(active = shouldBlock)
+        showNotification(currentlyBlocking = shouldBlock)
     }
 
-    private fun showNotification() {
+    private fun showNotification(currentlyBlocking: Boolean) {
         val notificationManager = NotificationManagerCompat.from(this)
         val notification = notificationFactory.createNotification(
             this,
@@ -42,9 +48,30 @@ class TouchBlockerService : Service() {
         notificationManager.notify(R.id.blocker_notification_id, notification)
     }
 
-    private fun toggleBlock(value: Boolean) {
-        currentlyBlocking = value
-        Toast.makeText(this, "Toggled $value", Toast.LENGTH_LONG).show()
+    private fun toggleBlock(active: Boolean) {
+        currentlyBlocking = active
+        toggleOverlayView(active)
+        Toast.makeText(this, "Toggled $active", Toast.LENGTH_LONG).show()
+    }
+
+    private fun toggleOverlayView(active: Boolean) {
+        val windowManager = checkNotNull(getSystemService<WindowManager>())
+        if (active) {
+            val layoutParams = WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY).apply {
+                gravity = Gravity.CENTER
+            }
+            windowManager.addView(overlayView, layoutParams)
+        } else {
+            windowManager.removeView(overlayView)
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Suppress("LiftReturnOrAssignment")
+    private fun createOverlayView(): Button {
+        return Button(this).apply {
+            text = "Activate"
+        }
     }
 
 }

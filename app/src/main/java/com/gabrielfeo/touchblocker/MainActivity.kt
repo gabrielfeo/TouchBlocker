@@ -6,25 +6,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import androidx.lifecycle.MutableLiveData
 
 class MainActivity : AppCompatActivity() {
 
     private val canDrawOverlays = MutableLiveData<Boolean>()
-    private val activated = MutableLiveData<Boolean>().apply { value = false }
-    private lateinit var overlayView: View
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +29,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun createContentView(): LinearLayout {
         val canDrawStatusView = createCanDrawStatusView()
-        overlayView = createActivateButton().apply {
-            layoutParams = ViewGroup.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-        }
-        val activateButton = createActivateButton()
+        val activateButton = createStartButton()
         val manageButton = createManageButton()
         return LinearLayout(this).apply {
             layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
@@ -51,27 +42,13 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     @Suppress("LiftReturnOrAssignment")
-    private fun createActivateButton(): Button {
+    private fun createStartButton(): Button {
         return Button(this).apply {
-            text = "Activate"
+            text = "Start service"
             setOnClickListener {
                 val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
                 startService(startTouchBlocker)
             }
-        }
-    }
-
-    private fun toggleOverlayView() {
-        if (activated.value != true) {
-            val windowManager = checkNotNull(getSystemService<WindowManager>())
-            val layoutParams = WindowManager.LayoutParams(TYPE_APPLICATION_OVERLAY).apply {
-                gravity = Gravity.CENTER
-            }
-            windowManager.addView(overlayView, layoutParams)
-            activated.value = true
-        } else {
-            windowManager.removeView(overlayView)
-            activated.value = false
         }
     }
 
