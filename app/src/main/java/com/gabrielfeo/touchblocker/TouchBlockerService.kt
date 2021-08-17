@@ -95,6 +95,7 @@ class TouchBlockerService : Service() {
         }
     }
 
+    @Suppress("Deprecation")
     private fun WindowManager.getScreenSizeCompat(): Pair<Int, Int> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = currentWindowMetrics
