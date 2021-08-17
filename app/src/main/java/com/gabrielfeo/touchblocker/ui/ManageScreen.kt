@@ -77,7 +77,7 @@ private fun StatusTextParagraph(text: String) {
 
 @Preview("Without permission")
 @Composable
-fun ManageScreenWithoutPermission() {
+private fun ManageScreenWithoutPermission() {
     ManageScreen(
         canBlock = false,
         serviceRunning = false,
@@ -88,7 +88,7 @@ fun ManageScreenWithoutPermission() {
 
 @Preview("With permission")
 @Composable
-fun ManageScreenWithPermission() {
+private fun ManageScreenWithPermission() {
     ManageScreen(
         canBlock = true,
         serviceRunning = false,
@@ -99,7 +99,7 @@ fun ManageScreenWithPermission() {
 
 @Preview("Service running")
 @Composable
-fun ManageScreenServiceRunning() {
+private fun ManageScreenServiceRunning() {
     ManageScreen(
         canBlock = true,
         serviceRunning = true,
