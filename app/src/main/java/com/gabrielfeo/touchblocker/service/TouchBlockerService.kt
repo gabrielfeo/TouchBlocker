@@ -18,9 +18,8 @@ internal const val REQUEST_TOGGLE_BLOCK = 1029
 class TouchBlockerService : Service() {
 
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
-    private val overlayFactory: OverlayFactory = OverlayFactoryImpl()
     private val overlay by lazy(LazyThreadSafetyMode.NONE) {
-        overlayFactory.createOverlay(this, checkNotNull(getSystemService()))
+        OverlayFactoryImpl().createOverlay(this, checkNotNull(getSystemService()))
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
