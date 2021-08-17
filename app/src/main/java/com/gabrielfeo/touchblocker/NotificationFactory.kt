@@ -43,6 +43,7 @@ class NotificationFactoryImpl : NotificationFactory {
         val toggleBlockAction = createAction(currentlyBlocking, context)
         return NotificationCompat.Builder(context, channelId)
             .setOngoing(true)
+            .setSilent(true)
             .setContentTitle("TouchBlocker")
             .setContentText(contentText)
             .addAction(toggleBlockAction)
