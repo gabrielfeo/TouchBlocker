@@ -13,11 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.gabrielfeo.touchblocker.service.TouchBlockerService
+import com.gabrielfeo.touchblocker.state.TransientState
 
 class MainActivity : AppCompatActivity() {
 
     private var canBlock: Boolean by mutableStateOf(false)
-    private var startedService: Boolean by mutableStateOf(false)
 
     private fun checkCanBlock() = Settings.canDrawOverlays(this)
 
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             ManageScreen(
                 canBlock = canBlock,
-                serviceRunning = startedService,
+                serviceRunning = TransientState.isTouchBlockActive,
                 onGrantPermissionClick = ::goToPermissionSettings,
                 onStartBlockingClick = ::startTouchBlockerService,
             )
@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
     private fun startTouchBlockerService() {
         val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
         startService(startTouchBlocker)
-        startedService = true
     }
 
     private fun goToPermissionSettings() {

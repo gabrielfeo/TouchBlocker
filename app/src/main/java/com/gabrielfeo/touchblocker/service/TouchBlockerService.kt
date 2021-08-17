@@ -8,6 +8,7 @@ import android.view.WindowManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.gabrielfeo.touchblocker.R
+import com.gabrielfeo.touchblocker.state.TransientState
 import com.gabrielfeo.touchblocker.ui.OverlayFactory
 import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
 
@@ -32,6 +33,7 @@ class TouchBlockerService : Service() {
 
     private fun handleIntent(intent: Intent) {
         val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
+        TransientState.isTouchBlockActive = shouldBlock
         toggleOverlay(active = shouldBlock)
         showNotification(currentlyBlocking = shouldBlock)
     }
