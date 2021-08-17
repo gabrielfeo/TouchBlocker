@@ -99,9 +99,6 @@ class TouchBlockerService : Service() {
     private fun WindowManager.getScreenSizeCompat(): Pair<Int, Int> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val windowMetrics = currentWindowMetrics
-            // val insets: Insets = windowMetrics.windowInsets
-            //     .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars())
-            // windowMetrics.bounds.width() - insets.left - insets.right
             windowMetrics.bounds.let {
                 it.width() to it.height()
             }
