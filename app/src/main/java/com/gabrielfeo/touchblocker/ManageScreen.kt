@@ -41,7 +41,10 @@ fun ManageScreen(
 private fun GrantPermissionButton(onGrantPermissionClick: () -> Unit) {
     OutlinedButton(
         onClick = onGrantPermissionClick,
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red)
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = Color(0xFFB60000),
+            backgroundColor = Color(0x0DFF0000)
+        )
     ) {
         Text("Grant permission")
     }
