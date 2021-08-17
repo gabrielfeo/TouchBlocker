@@ -1,4 +1,4 @@
-package com.gabrielfeo.touchblocker
+package com.gabrielfeo.touchblocker.service
 
 import android.annotation.SuppressLint
 import android.app.Service
@@ -12,11 +12,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.core.graphics.TypefaceCompat
+import com.gabrielfeo.touchblocker.R
 
 internal const val ACTION_TOGGLE_BLOCK = "com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK"
 internal const val EXTRA_TOGGLE_BLOCK_TARGET_VALUE = "ACTION_TOGGLE_BLOCK.value"

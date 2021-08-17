@@ -1,4 +1,4 @@
-package com.gabrielfeo.touchblocker
+package com.gabrielfeo.touchblocker.service
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.gabrielfeo.touchblocker.R
 
 interface NotificationFactory {
     fun createNotification(
