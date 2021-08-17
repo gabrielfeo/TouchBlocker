@@ -1,6 +1,5 @@
 package com.gabrielfeo.touchblocker.service
 
-import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -9,7 +8,6 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.gabrielfeo.touchblocker.R
 import com.gabrielfeo.touchblocker.state.TransientState
-import com.gabrielfeo.touchblocker.ui.OverlayFactory
 import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
 
 internal const val ACTION_TOGGLE_BLOCK = "com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK"
