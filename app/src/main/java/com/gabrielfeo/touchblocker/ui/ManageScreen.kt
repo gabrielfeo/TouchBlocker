@@ -1,4 +1,4 @@
-package com.gabrielfeo.touchblocker
+package com.gabrielfeo.touchblocker.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
