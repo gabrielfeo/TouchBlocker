@@ -51,7 +51,7 @@ class TouchBlockerService : Service() {
 
     private fun handleIntent(intent: Intent) {
         val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
-        toggleBlock(active = shouldBlock)
+        toggleOverlayView(active = shouldBlock)
         showNotification(currentlyBlocking = shouldBlock)
     }
 
@@ -63,11 +63,6 @@ class TouchBlockerService : Service() {
             currentlyBlocking,
         )
         notificationManager.notify(R.id.blocker_notification_id, notification)
-    }
-
-    private fun toggleBlock(active: Boolean) {
-        toggleOverlayView(active)
-        Toast.makeText(this, "Toggled $active", Toast.LENGTH_LONG).show()
     }
 
     private fun toggleOverlayView(active: Boolean) {
