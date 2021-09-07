@@ -12,11 +12,16 @@ import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.gabrielfeo.touchblocker.TouchBlockerApplication
+import com.gabrielfeo.touchblocker.monitoring.BugsnagUserFlowMonitor
+import com.gabrielfeo.touchblocker.monitoring.UserFlowMonitor
 import com.gabrielfeo.touchblocker.service.TouchBlockerService
 import com.gabrielfeo.touchblocker.state.TransientState
 
 class MainActivity : AppCompatActivity() {
 
+
+    private val userFlowMonitor: UserFlowMonitor = BugsnagUserFlowMonitor()
     private var canBlock: Boolean by mutableStateOf(false)
 
     private fun checkCanBlock() = Settings.canDrawOverlays(this)
@@ -27,8 +32,13 @@ class MainActivity : AppCompatActivity() {
             ManageScreen(
                 canBlock = canBlock,
                 serviceRunning = TransientState.isTouchBlockActive,
-                onGrantPermissionClick = ::goToPermissionSettings,
-                onStartBlockingClick = ::startTouchBlockerService,
+                onGrantPermissionClick = {
+                    userFlowMonitor.registerEvent("Grant permission click")
+                    goToPermissionSettings()
+                },
+                onStartBlockingClick = {
+                    startTouchBlockerService()
+                },
             )
         }
     }
@@ -36,6 +46,10 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         canBlock = checkCanBlock()
+        userFlowMonitor.registerEvent(
+            "MainActivity#onStart()",
+            data = mapOf("canBlock" to canBlock)
+        )
     }
 
     private fun startTouchBlockerService() {

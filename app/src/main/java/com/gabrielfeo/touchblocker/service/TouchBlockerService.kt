@@ -7,6 +7,8 @@ import android.view.WindowManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.gabrielfeo.touchblocker.R
+import com.gabrielfeo.touchblocker.monitoring.BugsnagUserFlowMonitor
+import com.gabrielfeo.touchblocker.monitoring.UserFlowMonitor
 import com.gabrielfeo.touchblocker.state.TransientState
 import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
 
@@ -16,6 +18,7 @@ internal const val REQUEST_TOGGLE_BLOCK = 1029
 
 class TouchBlockerService : Service() {
 
+    private val userFlowMonitor: UserFlowMonitor = BugsnagUserFlowMonitor()
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
     private val overlay by lazy(LazyThreadSafetyMode.NONE) {
         OverlayFactoryImpl().createOverlay(this, checkNotNull(getSystemService()))
@@ -25,6 +28,7 @@ class TouchBlockerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+        registerOnStartCommand(intent)
         intent?.let { handleIntent(it) }
         return START_STICKY
     }
@@ -53,6 +57,22 @@ class TouchBlockerService : Service() {
         } else {
             windowManager.removeView(overlay.view)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        registerOnDestroy()
+    }
+
+    private fun registerOnStartCommand(intent: Intent?) {
+        userFlowMonitor.registerEvent(
+            "TouchBlockerService#onStartCommand()",
+            data = mapOf("intent" to intent)
+        )
+    }
+
+    private fun registerOnDestroy() {
+        userFlowMonitor.registerEvent("TouchBlockerService#onDestroy()")
     }
 
 }
