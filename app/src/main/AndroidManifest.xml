@@ -34,7 +34,7 @@
 
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
-            android:value="TODO"/>
+            android:value="${bugsnagApiKey}"/>
 
     </application>
 
