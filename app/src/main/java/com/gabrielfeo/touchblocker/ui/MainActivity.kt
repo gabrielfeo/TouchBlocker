@@ -12,7 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.gabrielfeo.touchblocker.monitoring.BugsnagLogger
+import com.gabrielfeo.touchblocker.monitoring.LoggerImpl
 import com.gabrielfeo.touchblocker.monitoring.Logger
 import com.gabrielfeo.touchblocker.service.TouchBlockerService
 import com.gabrielfeo.touchblocker.state.TransientState
@@ -20,7 +20,7 @@ import com.gabrielfeo.touchblocker.state.TransientState
 class MainActivity : AppCompatActivity() {
 
 
-    private val logger: Logger = BugsnagLogger()
+    private val logger: Logger = LoggerImpl()
     private var canBlock: Boolean by mutableStateOf(false)
 
     private fun checkCanBlock() = Settings.canDrawOverlays(this)

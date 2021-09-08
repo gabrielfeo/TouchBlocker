@@ -5,7 +5,7 @@ import com.bugsnag.android.BreadcrumbType
 import com.bugsnag.android.Bugsnag
 import com.gabrielfeo.touchblocker.BuildConfig
 
-class BugsnagLogger : Logger {
+class LoggerImpl : Logger {
 
     override fun log(message: String, data: Map<String, Any?>?) {
         when {
