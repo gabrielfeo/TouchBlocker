@@ -28,7 +28,7 @@ class TouchBlockerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        registerOnStartCommand(intent)
+        logOnStartCommand(intent)
         intent?.let { handleIntent(it) }
         return START_STICKY
     }
@@ -64,10 +64,10 @@ class TouchBlockerService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        registerOnDestroy()
+        logOnDestroy()
     }
 
-    private fun registerOnStartCommand(intent: Intent?) {
+    private fun logOnStartCommand(intent: Intent?) {
         logger.log(
             "TouchBlockerService#onStartCommand()",
             data = mapOf(
@@ -77,7 +77,7 @@ class TouchBlockerService : Service() {
         )
     }
 
-    private fun registerOnDestroy() {
+    private fun logOnDestroy() {
         logger.log("TouchBlockerService#onDestroy()")
     }
 

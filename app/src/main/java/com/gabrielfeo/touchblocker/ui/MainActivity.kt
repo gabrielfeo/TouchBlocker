@@ -45,10 +45,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         canBlock = checkCanBlock()
-        logger.log(
-            "MainActivity#onStart()",
-            data = mapOf("canBlock" to canBlock)
-        )
+        logOnStart()
     }
 
     private fun startTouchBlockerService() {
@@ -60,5 +57,12 @@ class MainActivity : AppCompatActivity() {
         val packageUri = Uri.parse("package:$packageName")
         val managePermission = Intent(ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
         startActivity(managePermission)
+    }
+
+    private fun logOnStart() {
+        logger.log(
+            "MainActivity#onStart()",
+            data = mapOf("canBlock" to canBlock)
+        )
     }
 }
