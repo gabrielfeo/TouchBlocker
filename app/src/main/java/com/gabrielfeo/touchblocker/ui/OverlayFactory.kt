@@ -27,22 +27,9 @@ class OverlayFactoryImpl : OverlayFactory {
     override fun createOverlay(context: Context, windowManager: WindowManager): Overlay {
         val screenSize = windowManager.getScreenSizeCompat()
         return Overlay(
-            view = createView(context),
+            view = OverlayView(context),
             layoutParams = createOverlayLayoutParams(screenSize),
         )
-    }
-
-    private fun createView(context: Context): TextView {
-        val textColor = ContextCompat.getColor(context, R.color.overlay_text_color)
-        val textTypeface = TypefaceCompat.create(context, null, Typeface.BOLD)
-        return TextView(context).apply {
-            gravity = Gravity.CENTER
-            rotation = -45f
-            text = context.getString(R.string.overlay_text)
-            textSize = 28f
-            setTextColor(textColor)
-            typeface = textTypeface
-        }
     }
 
     private fun createOverlayLayoutParams(screenSize: Pair<Int, Int>): WindowManager.LayoutParams {
