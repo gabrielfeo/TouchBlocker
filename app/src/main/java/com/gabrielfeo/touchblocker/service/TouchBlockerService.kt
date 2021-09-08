@@ -98,6 +98,7 @@ class TouchBlockerService : Service() {
     private fun logInconsistentState(targetToggleValue: Boolean, attachedToWindow: Boolean) {
         logger.log(
             "Inconsistent state",
+            level = Logger.Level.WARN,
             data = mapOf(
                 "toggleActive" to targetToggleValue,
                 "attachedToWindow" to attachedToWindow,
