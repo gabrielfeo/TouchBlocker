@@ -55,10 +55,14 @@ class TouchBlockerService : Service() {
 
     private fun toggleOverlay(active: Boolean) {
         val windowManager = checkNotNull(getSystemService<WindowManager>())
-        if (active) {
+        val overlayAdded = overlay.view.isAttachedToWindow
+        if (active && !overlayAdded) {
             windowManager.addView(overlay.view, overlay.layoutParams)
-        } else {
+        } else if (!active && overlayAdded) {
             windowManager.removeView(overlay.view)
+        } else {
+            // Do nothing, as everything seems to be in target state
+            logInconsistentState(targetToggleValue = active, attachedToWindow = overlayAdded)
         }
     }
 
@@ -74,6 +78,16 @@ class TouchBlockerService : Service() {
                 "intent" to intent,
                 "toggleBlockValue" to intent?.getToggleBlockValue(),
             )
+        )
+    }
+
+    private fun logInconsistentState(targetToggleValue: Boolean, attachedToWindow: Boolean) {
+        logger.log(
+            "Inconsistent state",
+            data = mapOf(
+                "toggleActive" to targetToggleValue,
+                "attachedToWindow" to attachedToWindow,
+            ),
         )
     }
 
