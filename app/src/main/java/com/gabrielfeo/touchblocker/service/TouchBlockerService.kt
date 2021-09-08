@@ -34,11 +34,14 @@ class TouchBlockerService : Service() {
     }
 
     private fun handleIntent(intent: Intent) {
-        val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
+        val shouldBlock = intent.getToggleBlockValue()
         TransientState.isTouchBlockActive = shouldBlock
         toggleOverlay(active = shouldBlock)
         showNotification(currentlyBlocking = shouldBlock)
     }
+
+    private fun Intent.getToggleBlockValue() =
+        getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
 
     private fun showNotification(currentlyBlocking: Boolean) {
         val notificationManager = NotificationManagerCompat.from(this)
@@ -67,7 +70,10 @@ class TouchBlockerService : Service() {
     private fun registerOnStartCommand(intent: Intent?) {
         userFlowMonitor.registerEvent(
             "TouchBlockerService#onStartCommand()",
-            data = mapOf("intent" to intent)
+            data = mapOf(
+                "intent" to intent,
+                "toggleBlockValue" to intent?.getToggleBlockValue(),
+            )
         )
     }
 
