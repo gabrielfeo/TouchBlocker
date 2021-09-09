@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTouchBlockerService() {
-        val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
+        val startTouchBlocker = TouchBlockerService.newIntent(this, shouldBlock = true)
         startService(startTouchBlocker)
     }
 
