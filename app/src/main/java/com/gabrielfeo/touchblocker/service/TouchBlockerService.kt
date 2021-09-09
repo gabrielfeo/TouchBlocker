@@ -12,7 +12,7 @@ import com.gabrielfeo.touchblocker.R
 import com.gabrielfeo.touchblocker.monitoring.LoggerImpl
 import com.gabrielfeo.touchblocker.monitoring.Logger
 import com.gabrielfeo.touchblocker.state.TransientState
-import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
+import com.gabrielfeo.touchblocker.ui.overlay.OverlayFactoryImpl
 
 internal const val ACTION_TOGGLE_BLOCK = "com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK"
 internal const val EXTRA_TOGGLE_BLOCK_TARGET_VALUE = "ACTION_TOGGLE_BLOCK.value"

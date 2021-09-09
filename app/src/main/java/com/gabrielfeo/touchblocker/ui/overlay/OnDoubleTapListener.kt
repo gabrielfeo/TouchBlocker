@@ -1,4 +1,4 @@
-package com.gabrielfeo.touchblocker.ui
+package com.gabrielfeo.touchblocker.ui.overlay
 
 import android.view.GestureDetector
 import android.view.MotionEvent
