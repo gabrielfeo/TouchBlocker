@@ -14,6 +14,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -79,8 +80,6 @@ private fun CurrentlyBlockingMessage(modifier: Modifier = Modifier) {
         modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        MessageTextParagraph("It works!")
-        Spacer(modifier = Modifier.size(4.dp))
         MessageTextParagraph("Please use the notification to toggle blocking on/off")
         Spacer(modifier = Modifier.size(2.dp))
         val tip = buildAnnotatedString {
@@ -94,6 +93,7 @@ private fun CurrentlyBlockingMessage(modifier: Modifier = Modifier) {
 }
 
 @Composable
+@Suppress("SameParameterValue")
 private fun MessageTextParagraph(text: String) = MessageTextParagraph(AnnotatedString(text))
 
 @Composable
