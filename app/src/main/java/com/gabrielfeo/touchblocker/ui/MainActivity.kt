@@ -12,16 +12,15 @@ import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.gabrielfeo.touchblocker.TouchBlockerApplication
-import com.gabrielfeo.touchblocker.monitoring.BugsnagUserFlowMonitor
-import com.gabrielfeo.touchblocker.monitoring.UserFlowMonitor
+import com.gabrielfeo.touchblocker.monitoring.BugsnagLogger
+import com.gabrielfeo.touchblocker.monitoring.Logger
 import com.gabrielfeo.touchblocker.service.TouchBlockerService
 import com.gabrielfeo.touchblocker.state.TransientState
 
 class MainActivity : AppCompatActivity() {
 
 
-    private val userFlowMonitor: UserFlowMonitor = BugsnagUserFlowMonitor()
+    private val logger: Logger = BugsnagLogger()
     private var canBlock: Boolean by mutableStateOf(false)
 
     private fun checkCanBlock() = Settings.canDrawOverlays(this)
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 canBlock = canBlock,
                 serviceRunning = TransientState.isTouchBlockActive,
                 onGrantPermissionClick = {
-                    userFlowMonitor.registerEvent("Grant permission click")
+                    logger.log("Grant permission click")
                     goToPermissionSettings()
                 },
                 onStartBlockingClick = {
@@ -46,10 +45,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         canBlock = checkCanBlock()
-        userFlowMonitor.registerEvent(
-            "MainActivity#onStart()",
-            data = mapOf("canBlock" to canBlock)
-        )
+        logOnStart()
     }
 
     private fun startTouchBlockerService() {
@@ -61,5 +57,12 @@ class MainActivity : AppCompatActivity() {
         val packageUri = Uri.parse("package:$packageName")
         val managePermission = Intent(ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
         startActivity(managePermission)
+    }
+
+    private fun logOnStart() {
+        logger.log(
+            "MainActivity#onStart()",
+            data = mapOf("canBlock" to canBlock)
+        )
     }
 }

@@ -7,8 +7,8 @@ import android.view.WindowManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
 import com.gabrielfeo.touchblocker.R
-import com.gabrielfeo.touchblocker.monitoring.BugsnagUserFlowMonitor
-import com.gabrielfeo.touchblocker.monitoring.UserFlowMonitor
+import com.gabrielfeo.touchblocker.monitoring.BugsnagLogger
+import com.gabrielfeo.touchblocker.monitoring.Logger
 import com.gabrielfeo.touchblocker.state.TransientState
 import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
 
@@ -18,7 +18,7 @@ internal const val REQUEST_TOGGLE_BLOCK = 1029
 
 class TouchBlockerService : Service() {
 
-    private val userFlowMonitor: UserFlowMonitor = BugsnagUserFlowMonitor()
+    private val logger: Logger = BugsnagLogger()
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
     private val overlay by lazy(LazyThreadSafetyMode.NONE) {
         OverlayFactoryImpl().createOverlay(this, checkNotNull(getSystemService()))
@@ -28,17 +28,20 @@ class TouchBlockerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        registerOnStartCommand(intent)
+        logOnStartCommand(intent)
         intent?.let { handleIntent(it) }
         return START_STICKY
     }
 
     private fun handleIntent(intent: Intent) {
-        val shouldBlock = intent.getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
+        val shouldBlock = intent.getToggleBlockValue()
         TransientState.isTouchBlockActive = shouldBlock
         toggleOverlay(active = shouldBlock)
         showNotification(currentlyBlocking = shouldBlock)
     }
+
+    private fun Intent.getToggleBlockValue() =
+        getBooleanExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, true)
 
     private fun showNotification(currentlyBlocking: Boolean) {
         val notificationManager = NotificationManagerCompat.from(this)
@@ -61,18 +64,21 @@ class TouchBlockerService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        registerOnDestroy()
+        logOnDestroy()
     }
 
-    private fun registerOnStartCommand(intent: Intent?) {
-        userFlowMonitor.registerEvent(
+    private fun logOnStartCommand(intent: Intent?) {
+        logger.log(
             "TouchBlockerService#onStartCommand()",
-            data = mapOf("intent" to intent)
+            data = mapOf(
+                "intent" to intent,
+                "toggleBlockValue" to intent?.getToggleBlockValue(),
+            )
         )
     }
 
-    private fun registerOnDestroy() {
-        userFlowMonitor.registerEvent("TouchBlockerService#onDestroy()")
+    private fun logOnDestroy() {
+        logger.log("TouchBlockerService#onDestroy()")
     }
 
 }
