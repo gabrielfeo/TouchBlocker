@@ -1,6 +1,7 @@
 package com.gabrielfeo.touchblocker.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.view.View
@@ -11,7 +12,7 @@ import com.gabrielfeo.touchblocker.R
 import com.gabrielfeo.touchblocker.monitoring.LoggerImpl
 import com.gabrielfeo.touchblocker.monitoring.Logger
 import com.gabrielfeo.touchblocker.state.TransientState
-import com.gabrielfeo.touchblocker.ui.OverlayFactoryImpl
+import com.gabrielfeo.touchblocker.ui.overlay.OverlayFactoryImpl
 
 internal const val ACTION_TOGGLE_BLOCK = "com.gabrielfeo.touchblocker.ACTION_TOGGLE_BLOCK"
 internal const val EXTRA_TOGGLE_BLOCK_TARGET_VALUE = "ACTION_TOGGLE_BLOCK.value"
@@ -19,11 +20,27 @@ internal const val REQUEST_TOGGLE_BLOCK = 1029
 
 class TouchBlockerService : Service() {
 
+    companion object {
+        fun newIntent(
+            context: Context,
+            shouldBlock: Boolean,
+        ) = Intent(context, TouchBlockerService::class.java).apply {
+            action = ACTION_TOGGLE_BLOCK
+            putExtra(EXTRA_TOGGLE_BLOCK_TARGET_VALUE, shouldBlock)
+        }
+    }
+
     private val logger: Logger = LoggerImpl()
     private val notificationFactory: NotificationFactory = NotificationFactoryImpl()
     private val overlay by lazy(LazyThreadSafetyMode.NONE) {
-        OverlayFactoryImpl().createOverlay(this, checkNotNull(getSystemService()))
-            .also { it.view.registerAttachedStateChangeLogger() }
+        OverlayFactoryImpl().createOverlay(
+            this,
+            checkNotNull(getSystemService()),
+            onStopBlockingRequested = {
+                val stopBlocking = newIntent(this, shouldBlock = false)
+                startService(stopBlocking)
+            }
+        ).also { it.view.registerAttachedStateChangeLogger() }
     }
 
     override fun onBind(intent: Intent?): IBinder? = null

@@ -1,19 +1,16 @@
-package com.gabrielfeo.touchblocker.ui
+package com.gabrielfeo.touchblocker.ui.manage
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.gabrielfeo.touchblocker.monitoring.LoggerImpl
 import com.gabrielfeo.touchblocker.monitoring.Logger
+import com.gabrielfeo.touchblocker.monitoring.LoggerImpl
 import com.gabrielfeo.touchblocker.service.TouchBlockerService
 import com.gabrielfeo.touchblocker.state.TransientState
 
@@ -49,13 +46,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTouchBlockerService() {
-        val startTouchBlocker = Intent(this@MainActivity, TouchBlockerService::class.java)
+        val startTouchBlocker = TouchBlockerService.newIntent(this, shouldBlock = true)
         startService(startTouchBlocker)
     }
 
     private fun goToPermissionSettings() {
         val packageUri = Uri.parse("package:$packageName")
-        val managePermission = Intent(ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
+        val managePermission = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, packageUri)
         startActivity(managePermission)
     }
 

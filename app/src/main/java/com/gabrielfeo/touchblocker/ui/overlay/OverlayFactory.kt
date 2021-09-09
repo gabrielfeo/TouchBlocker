@@ -1,17 +1,12 @@
-package com.gabrielfeo.touchblocker.ui
+package com.gabrielfeo.touchblocker.ui.overlay
 
 import android.content.Context
 import android.graphics.PixelFormat
-import android.graphics.Typeface
 import android.os.Build
 import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.TypefaceCompat
-import com.gabrielfeo.touchblocker.R
 
 data class Overlay(
     val view: View,
@@ -19,15 +14,23 @@ data class Overlay(
 )
 
 interface OverlayFactory {
-    fun createOverlay(context: Context, windowManager: WindowManager): Overlay
+    fun createOverlay(
+        context: Context,
+        windowManager: WindowManager,
+        onStopBlockingRequested: () -> Unit,
+    ): Overlay
 }
     
 class OverlayFactoryImpl : OverlayFactory {
 
-    override fun createOverlay(context: Context, windowManager: WindowManager): Overlay {
+    override fun createOverlay(
+        context: Context,
+        windowManager: WindowManager,
+        onStopBlockingRequested: () -> Unit,
+    ): Overlay {
         val screenSize = windowManager.getScreenSizeCompat()
         return Overlay(
-            view = OverlayView(context),
+            view = TouchBlockingView(context, onStopBlockingRequested = onStopBlockingRequested),
             layoutParams = createOverlayLayoutParams(screenSize),
         )
     }
